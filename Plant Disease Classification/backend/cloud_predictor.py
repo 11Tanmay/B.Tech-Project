@@ -7,6 +7,8 @@ load_dotenv()
 def predict_image(image):
     api_key = os.getenv('OPEN_AI_API_KEY')
 
+    print(api_key)
+
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
