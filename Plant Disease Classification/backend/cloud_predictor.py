@@ -1,8 +1,11 @@
-import base64
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def predict_image(image):
-    api_key = "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"
+    api_key = os.getenv('OPEN_AI_API_KEY')
 
     headers = {
         "Content-Type": "application/json",
