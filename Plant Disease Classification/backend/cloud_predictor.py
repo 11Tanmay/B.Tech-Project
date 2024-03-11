@@ -4,8 +4,6 @@ from environment import OPEN_AI_API_KEY
 def predict_image(image):
     api_key = OPEN_AI_API_KEY
 
-    print(api_key)
-
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
