@@ -1,11 +1,8 @@
 import requests
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from environment import OPEN_AI_API_KEY
 
 def predict_image(image):
-    api_key = os.getenv('OPEN_AI_API_KEY')
+    api_key = OPEN_AI_API_KEY
 
     print(api_key)
 
