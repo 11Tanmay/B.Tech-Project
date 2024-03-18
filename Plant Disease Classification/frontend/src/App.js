@@ -2,7 +2,7 @@ import './App.css';
 import React, {useState} from 'react';
 import { InboxOutlined } from '@ant-design/icons'
 import Typography from '@mui/material/Typography';
-import { Button, message, Upload, Image, ConfigProvider, Descriptions } from 'antd';
+import { Button, message, Upload, Image, ConfigProvider, Descriptions, Switch } from 'antd';
 import axios from "axios";
 
 
@@ -17,6 +17,19 @@ function App() {
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   })
+
+  const [switchState, setSwitchState] = useState('Edge');
+
+  const onSwitchChange = () => {
+    if(switchState === 'Edge')
+    {
+      setSwitchState('Cloud');
+    }
+    else
+    {
+      setSwitchState('Edge');
+    }
+  }
 
   const [edgeFileList, setEdgeFileList] = useState([]);
   const [edgeUploading, setEdgeUploading] = useState(false);
@@ -128,12 +141,12 @@ function App() {
         
         setEdgeDescriptionItems(descriptionItems)
 
-        message.success('edge upload successful.')
+        message.success('Edge upload successful.')
         setIsEdgeDescriptionVis(1);
         setIsEdgeUploadButtonVis(0);
       })
       .catch((error) => {
-        message.error('edge upload failed.');
+        message.error('Edge upload failed.');
         setIsEdgeUploadButtonVis(1);
       })
       .finally(() => {
@@ -202,12 +215,12 @@ function App() {
             },
           ]
         )
-        message.success('edge upload successful.')
+        message.success('Cloud upload successful.')
         setIsCloudDescriptionVis(1);
         setIsCloudUploadButtonVis(0);
       })
       .catch((error) => {
-        message.error('edge upload failed.');
+        message.error('Cloud upload failed.');
         setIsCloudUploadButtonVis(1);
       })
       .finally(() => {
@@ -220,179 +233,193 @@ function App() {
     setIsCloudDraggerVis(1);
     setIsCloudUploadButtonVis(1);
     setIsCloudImageVis(0);
+    setIsCloudDescriptionVis(0);
   }
 
   return (
     <div>
       <div>
         <Typography align='center' color='white' variant='h3'>
-          Plant Disease Classifier
+          {
+            switchState === 'Edge' ? 'Edge Server' : 'Cloud Server'
+          }
         </Typography>
-      </div>
-      <div>
-        <div>
-          <div className="uploader">
-            <div>
-              {
-                isEdgeDraggerVis === 1 &&
-                <Dragger
-                  name='file'
-                  multiple={false}
-                  showUploadList={false}
-                  beforeUpload={beforeEdgeUpload}
-                  onChange={onEdgeChange}
-                >
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
-                  <p className="upload-text">
-                    Click or drag file to this area.
-                  </p>
-                  <p className="upload-hint">
-                    Upload a single image.
-                  </p>
-                </Dragger>
-              }
-            </div>
-            <div className="image-area">
-              {
-                isEdgeImageVis === 1 &&
-                <Image 
-                  width={300}
-                  height={300}
-                  src={edgeImageURL}
-                />
-              }
-            </div>
-            <div className="upload-button-area">
-              {
-                isEdgeUploadButtonVis === 1 &&
-                <Button
-                  type="primary"
-                  onClick={handleEdgeUpload}
-                  loading={edgeUploading}
-                  className="upload-button"
-                >
-                  {edgeUploading ? 'Uploading' : 'Start Upload'}
-                </Button>
-              }
-              <Button
-                type="primary"
-                onClick={handleEdgeReset}
-                className="upload-button"
-              >
-                Reset
-              </Button>
-            </div>
-            <>
-              {
-                isEdgeDescriptionVis === 1 &&
-                <div className="description">
-                  <ConfigProvider
-                    theme={{
-                      components: {
-                        Descriptions: {
-                          titleColor: "rgb(255, 255, 255)",
-                          labelBg: "rgb(35, 45, 63)"
-                        },
-                      }
-                    }}
-                  >
-                  <Descriptions 
-                    title={edgeDescriptiontTitle} 
-                    bordered items={edgeDescriptionItems}
-                    labelStyle={{color: 'white'}}
-                    contentStyle={{color: 'white'}}
-                  />
-                  </ConfigProvider>
-                </div>
-              }
-            </>
-          </div>
+        <div className="switch">
+          <Switch
+            onChange={onSwitchChange}
+          />
         </div>
       </div>
-      <div>
+      {
+        switchState === 'Edge' &&
         <div>
-          <div className="uploader">
-            <div>
-              {
-                isCloudDraggerVis === 1 &&
-                <Dragger
-                  name='file'
-                  multiple={false}
-                  showUploadList={false}
-                  beforeUpload={beforeCloudUpload}
-                  onChange={onCloudChange}
-                >
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
-                  <p className="upload-text">
-                    Click or drag file to this area.
-                  </p>
-                  <p className="upload-hint">
-                    Upload a single image.
-                  </p>
-                </Dragger>
-              }
-            </div>
-            <div className="image-area">
-              {
-                isCloudImageVis === 1 &&
-                <Image 
-                  width={300}
-                  height={300}
-                  src={cloudImageURL}
-                />
-              }
-            </div>
-            <div className="upload-button-area">
-              {
-                isCloudUploadButtonVis === 1 &&
+          <div>
+            <div className="uploader">
+              <div>
+                {
+                  isEdgeDraggerVis === 1 &&
+                  <Dragger
+                    name='file'
+                    multiple={false}
+                    showUploadList={false}
+                    beforeUpload={beforeEdgeUpload}
+                    onChange={onEdgeChange}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="upload-text">
+                      Click or drag file to this area.
+                    </p>
+                    <p className="upload-hint">
+                      Upload a single image.
+                    </p>
+                  </Dragger>
+                }
+              </div>
+              <div className="image-area">
+                {
+                  isEdgeImageVis === 1 &&
+                  <Image 
+                    width={300}
+                    height={300}
+                    src={edgeImageURL}
+                  />
+                }
+              </div>
+              <div className="upload-button-area">
+                {
+                  isEdgeUploadButtonVis === 1 &&
+                  <Button
+                    type="primary"
+                    onClick={handleEdgeUpload}
+                    loading={edgeUploading}
+                    className="upload-button"
+                  >
+                    {edgeUploading ? 'Uploading' : 'Start Upload'}
+                  </Button>
+                }
                 <Button
                   type="primary"
-                  onClick={handleCloudUpload}
-                  loading={cloudUploading}
+                  onClick={handleEdgeReset}
                   className="upload-button"
                 >
-                  {edgeUploading ? 'Uploading' : 'Start Upload'}
+                  Reset
                 </Button>
-              }
-              <Button
-                type="primary"
-                onClick={handleCloudReset}
-                className="upload-button"
-              >
-                Reset
-              </Button>
+              </div>
+              <>
+                {
+                  isEdgeDescriptionVis === 1 &&
+                  <div className="description">
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Descriptions: {
+                            titleColor: "rgb(255, 255, 255)",
+                            labelBg: "rgb(35, 45, 63)"
+                          },
+                        }
+                      }}
+                    >
+                    <Descriptions 
+                      title={edgeDescriptiontTitle} 
+                      bordered items={edgeDescriptionItems}
+                      labelStyle={{color: 'white'}}
+                      contentStyle={{color: 'white'}}
+                    />
+                    </ConfigProvider>
+                  </div>
+                }
+              </>
             </div>
-            <>
-              {
-                isCloudDescriptionVis === 1 &&
-                <div className="description">
-                  <ConfigProvider
-                    theme={{
-                      components: {
-                        Descriptions: {
-                          titleColor: "rgb(255, 255, 255)",
-                          labelBg: "rgb(35, 45, 63)"
-                        },
-                      }
-                    }}
-                  >
-                  <Descriptions 
-                    title={cloudDescriptionTitle} 
-                    bordered items={cloudDescriptionItems}
-                    labelStyle={{color: 'white'}}
-                    contentStyle={{color: 'white'}}
-                  />
-                  </ConfigProvider>
-                </div>
-              }
-            </>
           </div>
         </div>
-      </div>
+      }
+      {
+        switchState === 'Cloud' &&
+        <div>
+          <div>
+            <div className="uploader">
+              <div>
+                {
+                  isCloudDraggerVis === 1 &&
+                  <Dragger
+                    name='file'
+                    multiple={false}
+                    showUploadList={false}
+                    beforeUpload={beforeCloudUpload}
+                    onChange={onCloudChange}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="upload-text">
+                      Click or drag file to this area.
+                    </p>
+                    <p className="upload-hint">
+                      Upload a single image.
+                    </p>
+                  </Dragger>
+                }
+              </div>
+              <div className="image-area">
+                {
+                  isCloudImageVis === 1 &&
+                  <Image 
+                    width={300}
+                    height={300}
+                    src={cloudImageURL}
+                  />
+                }
+              </div>
+              <div className="upload-button-area">
+                {
+                  isCloudUploadButtonVis === 1 &&
+                  <Button
+                    type="primary"
+                    onClick={handleCloudUpload}
+                    loading={cloudUploading}
+                    className="upload-button"
+                  >
+                    {edgeUploading ? 'Uploading' : 'Start Upload'}
+                  </Button>
+                }
+                <Button
+                  type="primary"
+                  onClick={handleCloudReset}
+                  className="upload-button"
+                >
+                  Reset
+                </Button>
+              </div>
+              <>
+                {
+                  isCloudDescriptionVis === 1 &&
+                  <div className="description">
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Descriptions: {
+                            titleColor: "rgb(255, 255, 255)",
+                            labelBg: "rgb(35, 45, 63)"
+                          },
+                        }
+                      }}
+                    >
+                    <Descriptions 
+                      title={cloudDescriptionTitle} 
+                      bordered items={cloudDescriptionItems}
+                      labelStyle={{color: 'white'}}
+                      contentStyle={{color: 'white'}}
+                    />
+                    </ConfigProvider>
+                  </div>
+                }
+              </>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   );
 }
