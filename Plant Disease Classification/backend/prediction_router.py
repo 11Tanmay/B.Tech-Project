@@ -20,11 +20,19 @@ router = APIRouter(
 def predict_from_edge(file: Annotated[UploadFile, File()]):
     try:
         img = Image.open(file.file)
-        img = img.resize((256, 256))
+        edge_img = img.resize((256, 256))
         convert_tensor = transforms.ToTensor()
-        img = convert_tensor(img)
-        prediction = edge_predictor.predict_image(img, edge_predictor.model)
+        edge_img = convert_tensor(edge_img)
+        prediction = edge_predictor.predict_image(edge_img, edge_predictor.model)
         remedies[prediction[0]]['accuracy']=prediction[1]
+
+        if int(prediction[1] * 100) < 95:
+            mem_img = BytesIO()
+            img.save(mem_img, format = 'jpeg')
+            encoded_image = base64.b64encode(mem_img.getvalue()).decode('utf-8')
+            mem_img.close()
+            remedies[prediction[0]]['cloud']=cloud_predictor.predict_image(encoded_image)
+        
         return remedies[prediction[0]]
 
     except Exception as e:

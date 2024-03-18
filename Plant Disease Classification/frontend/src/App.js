@@ -56,57 +56,78 @@ function App() {
         console.log(res)
         setEdgeFileList([]);
         setEdgeDescriptionTitle(res.data.title)
-        setEdgeDescriptionItems(
-          [
+
+        var descriptionItems = [
+          {
+            key: '1',
+            label: 'Model Accuracy',
+            children: (Math.floor(res.data.accuracy * 10000 ) / 100) + '%',
+            span: 1,
+          },
+          {
+            key: '2',
+            label: 'Is Disease Contagious',
+            children: res.data.contagious,
+            span: 2,
+          },
+          {
+            key: '3',
+            label: 'Reasons of Infection',
+            children: (
+              <div>
+                <Typography variant = "body1" align = 'justify'>
+                  {res.data.reason}
+                </Typography>
+              </div>
+            ),
+            span: 4
+          },
+          {
+            key: '4',
+            label: 'Remedies',
+            children: (
+              <div>
+                {
+                  <ul>
+                  {
+                    res.data.remedies.map((remedy, index) => {
+                      return (
+                        <>
+                          <li key={index+5}>
+                            {remedy}
+                          </li>
+                        </>
+                      )
+                    })
+                  }
+                  </ul>
+                }
+              </div>
+            ),
+            span: 4
+          },
+        ]
+
+        if(res.data.cloud !== undefined)
+        {
+          descriptionItems.push(
             {
-              key: '1',
-              label: 'Accuracy',
-              children: (Math.floor(res.data.accuracy * 10000 ) / 100) + '%',
-              span: 1,
-            },
-            {
-              key: '2',
-              label: 'Is Disease Contagious',
-              children: res.data.contagious,
-              span: 2,
-            },
-            {
-              key: '3',
-              label: 'Reasons of Infection',
+              key: '5',
+              label: 'Results from the cloud',
               children: (
-                <div>
-                  <Typography variant = "body1" align = 'justify'>
-                    {res.data.reason}
-                  </Typography>
-                </div>
+                  <div>
+                    <Typography variant = "body2" align = 'justify'>
+                      {res.data.cloud.choices[0].message.content}
+                    </Typography>
+                  </div>
               ),
               span: 4
-            },
-            {
-              key: '4',
-              label: 'Possible Remedies',
-              children: (
-                <div>
-                  {
-                    <ul>
-                    {
-                      res.data.remedies.map((remedy, index) => {
-                        return (
-                          <>
-                            <li key={index+5}>
-                              {remedy}
-                            </li>
-                          </>
-                        )
-                      })
-                    }
-                    </ul>
-                  }
-                </div>
-              ),
-            },
-          ]
-        )
+            }
+          )
+        }
+        
+        setEdgeDescriptionItems(descriptionItems)
+
         message.success('edge upload successful.')
         setIsEdgeDescriptionVis(1);
         setIsEdgeUploadButtonVis(0);
