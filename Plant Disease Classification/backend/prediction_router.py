@@ -1,13 +1,13 @@
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, Form
 from schemas import Message
 import edge_predictor
 import cloud_predictor
 import torchvision.transforms as transforms
 from PIL import Image
-from typing import Annotated
 from remedies import remedies
 import base64
 from io import BytesIO
+from pydantic import Json
 
 
 router = APIRouter(
@@ -17,9 +17,11 @@ router = APIRouter(
 
 
 @router.post('/edge', status_code=200)
-def predict_from_edge(file: Annotated[UploadFile, File()]):
+def predict_from_edge(data: Json = Form()):
     try:
-        img = Image.open(file.file)
+        pass
+        img = data['image'][23:]
+        img = Image.open(BytesIO(base64.decodebytes(bytes(img, "utf-8"))))
         edge_img = img.resize((256, 256))
         convert_tensor = transforms.ToTensor()
         edge_img = convert_tensor(edge_img)
@@ -40,9 +42,10 @@ def predict_from_edge(file: Annotated[UploadFile, File()]):
         return Message(f"Error Occured")
     
 @router.post('/cloud', status_code=200)
-def predict_from_server(file: Annotated[UploadFile, File()]):
+def predict_from_server(data: Json = Form()):
     try:
-        img = Image.open(file.file)
+        img = data['image'][23:]
+        img = Image.open(BytesIO(base64.decodebytes(bytes(img, "utf-8"))))
 
         mem_img = BytesIO()
         img.save(mem_img, format = 'jpeg')

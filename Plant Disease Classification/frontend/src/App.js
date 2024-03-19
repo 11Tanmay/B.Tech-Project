@@ -2,11 +2,13 @@ import './App.css';
 import React, {useState} from 'react';
 import { InboxOutlined } from '@ant-design/icons'
 import Typography from '@mui/material/Typography';
-import { Button, message, Upload, Image, ConfigProvider, Descriptions, Switch } from 'antd';
+import { Button, message, Upload, Image, ConfigProvider, Descriptions, Switch, Input, Select } from 'antd';
 import axios from "axios";
 
 
 const { Dragger } = Upload
+const { TextArea } = Input;
+
 
 function App() {
 
@@ -30,8 +32,7 @@ function App() {
       setSwitchState('Edge');
     }
   }
-
-  const [edgeFileList, setEdgeFileList] = useState([]);
+  
   const [edgeUploading, setEdgeUploading] = useState(false);
   const [isEdgeDraggerVis, setIsEdgeDraggerVis] = useState(1);
   const [isEdgeUploadButtonVis, setIsEdgeUploadButtonVis] = useState(1);
@@ -42,7 +43,6 @@ function App() {
   const [edgeDescriptiontTitle, setEdgeDescriptionTitle] = useState('');
 
   const onEdgeChange = async (file) => {
-    setEdgeFileList(file.fileList);
 
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.fileList[0].originFileObj);
@@ -59,7 +59,13 @@ function App() {
 
   const handleEdgeUpload = async () => {
     const formData = new FormData();
-    formData.append('file', edgeFileList[0].originFileObj);
+
+    formData.append(
+      "data",
+      JSON.stringify({
+        'image': edgeImageURL
+      })
+    )
 
     setEdgeUploading(true);
 
@@ -67,7 +73,6 @@ function App() {
       .post("http://127.0.0.1:8000/predict/edge", formData)
       .then((res) => {
         console.log(res)
-        setEdgeFileList([]);
         setEdgeDescriptionTitle(res.data.title)
 
         var descriptionItems = [
@@ -162,7 +167,6 @@ function App() {
     setIsEdgeDescriptionVis(0);
   }
 
-  const [cloudFileList, setCloudFileList] = useState([]);
   const [cloudUploading, setCloudUploading] = useState(false);
   const [isCloudDraggerVis, setIsCloudDraggerVis] = useState(1);
   const [isCloudUploadButtonVis, setIsCloudUploadButtonVis] = useState(1);
@@ -172,8 +176,61 @@ function App() {
   const [isCloudDescriptionVis, setIsCloudDescriptionVis] = useState(0);
   const [cloudDescriptionTitle, setCloudDescriptionTitle] = useState('');
 
+  const [plantName, setPlantName] = useState('');
+  const [region, setRegion] = useState('');
+  const [temperature, setTemperature] = useState('');
+  const [soilPH, setSoilPH] = useState('');
+  const [soilType, setSoilType] = useState('');
+  const [imageDescription, setImageDescription] = useState('');
+
+  const handlePlantName = (e) => {
+    setPlantName(e.target.value)
+  }
+
+  const handleRegion = (value) => {
+    setRegion(value);
+  }
+
+  const handleTemp = (value) => {
+    setTemperature(value)
+  }
+
+  const handleSoilPH = (value) => {
+    setSoilPH(value)
+  }
+
+  const handleSoilType = (value) => {
+    setSoilType(value)
+  }
+
+  const handleImageDescription = (e) => {
+    setImageDescription(e.target.value)
+  }
+
+  const options = [
+    {
+      value: 'jack',
+      label: 'Jack',
+    },
+    {
+      value: 'lucy',
+      label: 'Lucy',
+    },
+    {
+      value: 'Yiminghe',
+      label: 'yiminghe',
+    },
+    {
+      value: 'disabled',
+      label: 'Disabled',
+      disabled: true,
+    },
+  ]   // to be updated
+
+
   const onCloudChange = async (file) => {
-    setCloudFileList(file.fileList);
+
+    console.log(file.fileList)
 
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.fileList[0].originFileObj);
@@ -190,7 +247,32 @@ function App() {
 
   const handleCloudUpload = async () => {
     const formData = new FormData();
-    formData.append('file', cloudFileList[0].originFileObj);
+
+    if(
+      cloudImageURL === '' ||
+      plantName === '' ||
+      region === '' ||
+      temperature === '' ||
+      soilPH === '' ||
+      soilType === ''
+    )
+    {
+      message.error('all parametres not set')
+      return
+    }
+
+    formData.append(
+      "data",
+      JSON.stringify({
+        'image': cloudImageURL,
+        'plantName': plantName,
+        'region': region,
+        'temperature': temperature,
+        'soilPH': soilPH,
+        'soilType': soilType,
+        'imageDescription': imageDescription
+      })
+    )
 
     setCloudUploading(true);
 
@@ -198,7 +280,6 @@ function App() {
       .post("http://127.0.0.1:8000/predict/cloud", formData)
       .then((res) => {
         console.log(res)
-        setCloudFileList([]);
         setCloudDescriptionTitle('')
         setCloudDescriptionItems(
           [
@@ -234,6 +315,13 @@ function App() {
     setIsCloudUploadButtonVis(1);
     setIsCloudImageVis(0);
     setIsCloudDescriptionVis(0);
+
+    setPlantName('')
+    setRegion('')
+    setTemperature('')
+    setSoilPH('')
+    setSoilType('')
+    setImageDescription('')
   }
 
   return (
@@ -392,6 +480,73 @@ function App() {
                   Reset
                 </Button>
               </div>
+              {
+                isCloudUploadButtonVis === 1 &&
+                <div
+                  className = "cloud-input"
+                >
+                  <Input placeholder="Name of the Plant" 
+                    onChange={handlePlantName}
+                    style={{
+                      width: '95.5%',
+                    }}
+                  />
+                  <div
+                    className = "select"
+                  >
+                    <Select
+                      defaultValue="Region"
+                      onChange={handleRegion}
+                      options={options}
+                      style={{
+                        margin: '2px',
+                        width: '47.5%',
+                      }}
+                    />
+                    <Select
+                      defaultValue="Temperature Range"
+                      onChange={handleTemp}
+                      options={options}
+                      style={{
+                        margin: '2px',
+                        width: '47.5%',
+                      }}
+                    />
+                  </div>
+                  <div
+                    className = 'select'
+                  >
+                    <Select
+                      defaultValue="Soil pH"
+                      onChange={handleSoilPH}
+                      options={options}
+                      style={{
+                        margin: '2px',
+                        width: '47.5%',
+                      }}
+                    />
+                    <Select
+                      defaultValue="Soil Type"
+                      onChange={handleSoilType}
+                      options={options}
+                      style={{
+                        margin: '2px',
+                        width: '47.5%',
+                      }}
+                    />
+                  </div>
+                  <TextArea
+                    value={imageDescription}
+                    onChange={handleImageDescription}
+                    placeholder="Enter description for the Image"
+                    autoSize={{ minRows: 3, maxRows: 5 }}
+                    style={{
+                        margin: '2px',
+                        width: '95.5%',
+                      }}
+                  />
+                </div>
+              }
               <>
                 {
                   isCloudDescriptionVis === 1 &&
