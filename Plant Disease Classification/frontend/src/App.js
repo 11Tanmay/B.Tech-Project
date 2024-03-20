@@ -207,26 +207,241 @@ function App() {
     setImageDescription(e.target.value)
   }
 
-  const options = [
-    {
-      value: 'jack',
-      label: 'Jack',
-    },
-    {
-      value: 'lucy',
-      label: 'Lucy',
-    },
-    {
-      value: 'Yiminghe',
-      label: 'yiminghe',
-    },
-    {
-      value: 'disabled',
-      label: 'Disabled',
-      disabled: true,
-    },
-  ]   // to be updated
+  const regionOptions = [
+      {
+        value: "Andaman and Nicobar Islands",
+        label: "Andaman and Nicobar Islands",
+      },
+      {
+        value: "Andhra Pradesh",
+        label: "Andhra Pradesh",
+      },
+      {
+        value: "Arunachal Pradesh",
+        label: "Arunachal Pradesh",
+      },
+      {
+        value: "Assam",
+        label: "Assam",
+      },
+      {
+        value: "Bihar",
+        label: "Bihar",
+      },
+      {
+        value: "Chandigarh",
+        label: "Chandigarh",
+      },
+      {
+        value: "Chhattisgarh",
+        label: "Chhattisgarh",
+      },
+      {
+        value: "Dadra and Nagar Haveli",
+        label: "Dadra and Nagar Haveli",
+      },
+      {
+        value: "Daman and Diu",
+        label: "Daman and Diu",
+      },
+      {
+        value: "Delhi",
+        label: "Delhi",
+      },
+      {
+        value: "Goa",
+        label: "Goa",
+      },
+      {
+        value: "Gujarat",
+        label: "Gujarat",
+      },
+      {
+        value: "Haryana",
+        label: "Haryana",
+      },
+      {
+        value: "Himachal Pradesh",
+        label: "Himachal Pradesh",
+      },
+      {
+        value: "Jammu and Kashmir",
+        label: "Jammu and Kashmir",
+      },
+      {
+        value: "Jharkhand",
+        label: "Jharkhand",
+      },
+      {
+        value: "Karnataka",
+        label: "Karnataka",
+      },
+      {
+        value: "Kerala",
+        label: "Kerala",
+      },
+      {
+        value: "Ladakh",
+        label: "Ladakh",
+      },
+      {
+        value: "Lakshadweep",
+        label: "Lakshadweep",
+      },
+      {
+        value: "Madhya Pradesh",
+        label: "Madhya Pradesh",
+      },
+      {
+        value: "Maharashtra",
+        label: "Maharashtra",
+      },
+      {
+        value: "Manipur",
+        label: "Manipur",
+      },
+      {
+        value: "Meghalaya",
+        label: "Meghalaya",
+      },
+      {
+        value: "Mizoram",
+        label: "Mizoram",
+      },
+      {
+        value: "Nagaland",
+        label: "Nagaland",
+      },
+      {
+        value: "Odisha",
+        label: "Odisha",
+      },
+      {
+        value: "Puducherry",
+        label: "Puducherry",
+      },
+      {
+        value: "Punjab",
+        label: "Punjab",
+      },
+      {
+        value: "Rajasthan",
+        label: "Rajasthan",
+      },
+      {
+        value: "Sikkim",
+        label: "Sikkim",
+      },
+      {
+        value: "Tamil Nadu",
+        label: "Tamil Nadu",
+      },
+      {
+        value: "Telangana",
+        label: "Telangana",
+      },
+      {
+        value: "Tripura",
+        label: "Tripura",
+      },
+      {
+        value: "Uttar Pradesh",
+        label: "Uttar Pradesh",
+      },
+      {
+        value: "Uttarakhand",
+        label: "Uttarakhand",
+      },
+      {
+        value: "West Bengal",
+        label: "West Bengal"
+      }
+  ]
 
+  const temperatureOptions = [
+    {
+      value: 'less than 0 degree celcius',
+      label: 'less than 0 degree celcius',
+    },
+    {
+      value: '0-10 degree celcius',
+      label: '0-10 degree celcius',
+    },
+    {
+      value: '10-20 degree celcius',
+      label: '10-20 degree celcius',
+    },
+    {
+      value: '20-30 degree celcius',
+      label: '20-30 degree celcius',
+    },
+    {
+      value: 'more than 30 degree celcius',
+      label: 'more than 30 degree celcius',
+    },
+  ]
+
+  const soilPHoptions = [
+    {
+      value: 'pH less than 5',
+      label: 'pH less than 5',
+    },
+    {
+      value: 'pH 5 to 7',
+      label: 'pH 5 to 7',
+    },
+    {
+      value: 'pH 7 to 10',
+      label: 'pH 7 to 10',
+    },
+    {
+      value: 'pH greater than 10',
+      label: 'pH greater than 10',
+    },
+  ]
+
+  const soilTypeOptions = [
+    {
+      value: 'Red soil',
+      label: 'Red soil',
+    },
+    {
+      value: 'Alluvial soil',
+      label: 'Alluvial soil',
+    },
+    {
+      value: 'Black soil',
+      label: 'Black soil',
+    },
+    {
+      value: 'Arid soil',
+      label: 'Arid soil',
+    },
+    {
+      value: 'Laterite soil',
+      label: 'Laterite soil',
+    },
+    {
+      value: 'Saline soil',
+      label: 'Saline soil',
+    },
+    {
+      value: 'Swampy soil',
+      label: 'Swampy soil',
+    },
+    {
+      value: 'Forest soil',
+      label: 'Forest soil',
+    },
+    {
+      value: 'Sub-Mountain soil',
+      label: 'Sub-Mountain soil',
+    },
+    {
+      value: 'Snowfield soil',
+      label: 'Snowfield soil',
+    },
+  ]
 
   const onCloudChange = async (file) => {
 
@@ -497,7 +712,7 @@ function App() {
                     <Select
                       defaultValue="Region"
                       onChange={handleRegion}
-                      options={options}
+                      options={regionOptions}
                       style={{
                         margin: '2px',
                         width: '47.5%',
@@ -506,7 +721,7 @@ function App() {
                     <Select
                       defaultValue="Temperature Range"
                       onChange={handleTemp}
-                      options={options}
+                      options={temperatureOptions}
                       style={{
                         margin: '2px',
                         width: '47.5%',
@@ -519,7 +734,7 @@ function App() {
                     <Select
                       defaultValue="Soil pH"
                       onChange={handleSoilPH}
-                      options={options}
+                      options={soilPHoptions}
                       style={{
                         margin: '2px',
                         width: '47.5%',
@@ -528,7 +743,7 @@ function App() {
                     <Select
                       defaultValue="Soil Type"
                       onChange={handleSoilType}
-                      options={options}
+                      options={soilTypeOptions}
                       style={{
                         margin: '2px',
                         width: '47.5%',
