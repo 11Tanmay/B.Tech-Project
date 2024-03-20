@@ -33,7 +33,7 @@ def predict_from_edge(data: Json = Form()):
             img.save(mem_img, format = 'jpeg')
             encoded_image = base64.b64encode(mem_img.getvalue()).decode('utf-8')
             mem_img.close()
-            remedies[prediction[0]]['cloud']=cloud_predictor.predict_image(encoded_image)
+            remedies[prediction[0]]['cloud']=cloud_predictor.predict_image_edge(encoded_image)
         
         return remedies[prediction[0]]
 
@@ -52,7 +52,15 @@ def predict_from_server(data: Json = Form()):
         encoded_image = base64.b64encode(mem_img.getvalue()).decode('utf-8')
         mem_img.close()
 
-        return cloud_predictor.predict_image(encoded_image)
+        return cloud_predictor.predict_image_detailed(
+            encoded_image,
+            data['plantName'],
+            data['region'],
+            data['temperature'],
+            data['soilPH'],
+            data['soilType'],
+            data['imageDescription']
+        )
 
     except Exception as e:
         print(e)
