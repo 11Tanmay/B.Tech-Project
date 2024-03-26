@@ -17,7 +17,10 @@ def predict_image_edge(image):
             "content": [
                 {
                 "type": "text",
-                "text": "What plant can you identify in this image and also What plant disease possibly can you identify in this image?"
+                "text": """
+                            What plant can you identify in this image?
+                            Based on the plant identified, what plant disease can you identify in this image?
+                        """
                 },
                 {
                 "type": "image_url",
@@ -40,12 +43,13 @@ def predict_image_detailed(image, plantName, region, temperature, soilPH, soilTy
     api_key = OPEN_AI_API_KEY
 
     prompt = f"""
-                This is an image for the plant of {plantName} which grows in {region}.
-                The average temperature range for the growth of this plant is {temperature},
-                and the pH for the growth is {soilPH}, it grows in {soilType} soil.
+                This is an image for the plant of {plantName}.
+                This plant grows in {region}.
+                The average temperature range for the growth of this plant is {temperature}.
+                Soil pH for its growth is {soilPH} and it grows in {soilType} soil.
                 {imageDescription}.
-                Based on these prompts and the image what plant disease can you identify in the
-                given picture? Describe.
+                Based on these prompts and the image what plant disease can you identify in the given picture?
+                Also give the possibles solutions and control methods for the disease.
             """
 
     headers = {
