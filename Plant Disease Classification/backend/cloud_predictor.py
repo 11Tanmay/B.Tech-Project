@@ -31,7 +31,7 @@ def predict_image_edge(image):
             ]
             }
         ],
-        "max_tokens": 100
+        "max_tokens": 400
     }
 
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
@@ -71,12 +71,13 @@ def predict_image_detailed(image, plantName, region, temperature, soilPH, soilTy
                 "type": "image_url",
                 "image_url": {
                     "url": f"data:image/jpeg;base64,{image}"
+                    "detail": "high"
                 }
                 }
             ]
             }
         ],
-        "max_tokens": 100
+        "max_tokens": 1000
     }
 
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
