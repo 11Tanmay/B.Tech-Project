@@ -78,7 +78,7 @@ function App() {
         var descriptionItems = [
           {
             key: '1',
-            label: 'Model Accuracy',
+            label: 'Model Confidence',
             children: (Math.floor(res.data.accuracy * 10000 ) / 100) + '%',
             span: 1,
           },
